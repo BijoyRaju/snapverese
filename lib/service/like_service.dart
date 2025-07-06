@@ -7,12 +7,23 @@ class LikeService {
 
   Future<void> likePost(String postId,String userId)async{
     try{
-      await _client.from('likes').insert({
+
+      log("Trying to like post: postId=$postId, userId=$userId");
+
+      if(postId.isEmpty || userId.isEmpty){
+        throw Exception("Invalid post id or user id");
+      }
+
+      final response =  await _client.from('likes').insert({
         'post_id' : postId,
         'user_id' : userId
       });
+      
+      log("Inserted like: $response");
+      
     }catch(e){
       log("Error liking post: $e");
+      rethrow;
     }
   }
 

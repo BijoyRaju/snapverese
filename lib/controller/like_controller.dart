@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:snapverese/service/like_service.dart';
 
@@ -11,6 +13,7 @@ class LikeController extends ChangeNotifier{
   Map<String,int> get likesCount => _likesCount;
 
   Future<void> toggleLike(String postId,String userId)async{
+    try{
     final isLiked = _likedPost.contains(postId);
     if(isLiked){
       await _likeService.unLikePost(postId, userId);
@@ -19,9 +22,13 @@ class LikeController extends ChangeNotifier{
     }else{
       await _likeService.likePost(postId, userId);
       _likedPost.add(postId);
-      _likesCount[postId] = (_likesCount[postId] ?? 1) + 1;
+      _likesCount[postId] = (_likesCount[postId] ?? 0) + 1;
     }
     notifyListeners();
+  }
+  catch(e){
+    log("Toggle like failed : $e");
+  }
   }
 
   Future<void> fetchLikesData(String postId,String userId)async{

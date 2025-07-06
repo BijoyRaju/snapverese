@@ -76,4 +76,14 @@ class PostController with ChangeNotifier {
     _posts.removeWhere((post) => post.id == postId);
     notifyListeners();
   }
+
+  // Get Post by User
+    Future<List<PostModel>>getUserPost(String uid)async{
+      try{
+        return await _postService.fetchPostByUser(uid);
+      }catch(e){
+        log("User post fetch error : $e");
+        return [];
+      }
+    }
 }

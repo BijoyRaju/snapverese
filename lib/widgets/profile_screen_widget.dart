@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-Widget profileButton(String title, VoidCallback onPressed) {
+Widget profileButton(String title, VoidCallback onPressed,Color color) {
   return SizedBox(
     height: 40,
     width: 150,
@@ -8,9 +8,8 @@ Widget profileButton(String title, VoidCallback onPressed) {
     child: ElevatedButton(
       onPressed: onPressed,
       style: ElevatedButton.styleFrom(
-        backgroundColor: Colors.black,
+        backgroundColor: color,
         foregroundColor: Colors.white,
-        // padding: EdgeInsets.symmetric(vertical: 10,horizontal: 25),
       ),
       child: Text(title, style: TextStyle(fontSize: 16)),
     ),

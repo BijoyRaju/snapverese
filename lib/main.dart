@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:snapverese/controller/auth_controller.dart';
+import 'package:snapverese/controller/follow_controller.dart';
+import 'package:snapverese/controller/like_controller.dart';
 import 'package:snapverese/controller/post_controller.dart';
 import 'package:snapverese/controller/user_controller.dart';
 import 'package:snapverese/view/splash_screen/splash_screen.dart';
@@ -25,8 +27,11 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (_) => AuthController()),
         ChangeNotifierProvider(create: (_) => PostController()),
-        ChangeNotifierProvider(create: (_) => UserController())
+        ChangeNotifierProvider(create: (_) => UserController()..fetchCurrentUser()),
+        ChangeNotifierProvider(create: (_) => LikeController()),
+        ChangeNotifierProvider(create: (_) => FollowController())
       ],
+      
       child: MaterialApp(
         title: "SNAPvERESE",
         home: SplashScreen(),

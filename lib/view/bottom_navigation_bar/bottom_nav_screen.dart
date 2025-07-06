@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:snapverese/view/home/home_screen.dart';
+import 'package:snapverese/view/my_profile/my_profile_screen.dart';
 import 'package:snapverese/view/notification/notification_screen.dart';
 import 'package:snapverese/view/search/search_screen.dart';
 import 'package:snapverese/view/settings/settings_screen.dart';
@@ -17,7 +18,7 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
   final List<Widget> pages = const [
     HomeScreen(),
     SearchScreen(),
-    NotificationScreen(),
+    MyProfileScreen(),
     SettingsScreen(),
   ];
 
@@ -48,8 +49,8 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
             label: 'Search',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.notifications_none),
-            activeIcon: Icon(Icons.notifications),
+            icon: Icon(Icons.person_outlined),
+            activeIcon: Icon(Icons.person),
             label: 'Notifications',
           ),
           BottomNavigationBarItem(

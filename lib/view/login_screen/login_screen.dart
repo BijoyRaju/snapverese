@@ -1,7 +1,9 @@
+import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:provider/provider.dart';
 import 'package:snapverese/controller/auth_controller.dart';
+import 'package:snapverese/service/auth_services.dart';
 import 'package:snapverese/view/bottom_navigation_bar/bottom_nav_screen.dart';
 import 'package:snapverese/view/registration/registration_screen.dart';
 import 'package:snapverese/widgets/common.dart';
@@ -14,6 +16,7 @@ class LoginScreen extends StatelessWidget {
 
   TextEditingController userNameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+  final AuthService authService = AuthService();
 
     return Scaffold(
       body: ListView(
@@ -55,7 +58,6 @@ class LoginScreen extends StatelessWidget {
 
                     try {
                       await authController.login(email, password);
-
                       Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(builder: (_) =>  BottomNavScreen()),
@@ -79,7 +81,12 @@ class LoginScreen extends StatelessWidget {
                       ],
                     ),
                   Gap(50),
-                  loginCustomButton("Google", (){}, 'assets/images/google.png'),
+                  loginCustomButton("Google", ()async{
+                    final result = await AuthService().nativeGoogleSignIn();
+                  if (result == "Google Authentication successful") {
+                    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const BottomNavScreen()));
+                  }
+                  }, 'assets/images/google.png'),
                   Gap(20),
                   loginCustomButton("Apple", (){}, 'assets/images/apple.png'),
                 ],

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:snapverese/model/user_model.dart';
 import 'package:snapverese/service/auth_services.dart';
 
+
 class AuthController with ChangeNotifier {
   final AuthService _authService = AuthService();
 

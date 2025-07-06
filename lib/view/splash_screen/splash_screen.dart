@@ -1,5 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:snapverese/controller/user_controller.dart';
 import 'package:snapverese/view/bottom_navigation_bar/bottom_nav_screen.dart';
 import 'package:snapverese/view/login_screen/login_screen.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -15,27 +17,34 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
+    initializeApp();
+  }
 
-    Timer(const Duration(seconds: 4), () {
-      final user = Supabase.instance.client.auth.currentUser;
+  Future<void> initializeApp() async {
+    await Future.delayed(const Duration(seconds: 3));
 
-      if (user != null) {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (_) => const BottomNavScreen()),
-        );
-      } else {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (_) => const LoginScreen()),
-        );
-      }
-    });
+    final user = Supabase.instance.client.auth.currentUser;
+
+    if (user != null) {
+      // Fetch current user details
+      final userController = Provider.of<UserController>(context, listen: false);
+      await userController.fetchCurrentUser();
+
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (_) => const BottomNavScreen()),
+      );
+    } else {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (_) => const LoginScreen()),
+      );
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return const Scaffold(
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -44,8 +53,8 @@ class _SplashScreenState extends State<SplashScreen> {
               radius: 80,
               backgroundImage: AssetImage('assets/images/SNAPvERSE.png'),
             ),
-            const SizedBox(height: 20),
-            const Text(
+            SizedBox(height: 20),
+            Text(
               'SNAPvERSE',
               style: TextStyle(
                 fontSize: 28,

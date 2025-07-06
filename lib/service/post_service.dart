@@ -55,4 +55,15 @@ Future<List<PostModel>> fetchAllPosts() async {
     
     await _client.from('posts').delete().eq('id', postId);
   }
+
+
+  Future<List<PostModel>> fetchPostByUser(String uid)async{
+    final response = await Supabase.instance.client
+      .from('posts')
+      .select()
+      .eq('uid', uid)
+      .order('created_at',ascending: false);
+
+    return (response as List).map((e) => PostModel.fromMap(e)).toList();
+  }
 }

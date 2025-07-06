@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:provider/provider.dart';
 import 'package:snapverese/controller/auth_controller.dart';
-import 'package:snapverese/view/home/home_screen.dart';
+import 'package:snapverese/view/bottom_navigation_bar/bottom_nav_screen.dart';
 import 'package:snapverese/view/login_screen/login_screen.dart';
 import 'package:snapverese/widgets/common.dart';
 
@@ -92,7 +92,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
 
                       Navigator.pushReplacement(
                         context,
-                        MaterialPageRoute(builder: (_) => const HomeScreen()),
+                        MaterialPageRoute(builder: (_) => const BottomNavScreen()),
                       );
                     } catch (e) {
                       showSnackBar(context, "Registration failed: $e");
