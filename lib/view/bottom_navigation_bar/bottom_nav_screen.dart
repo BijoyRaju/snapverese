@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:snapverese/view/home/home_screen.dart';
 import 'package:snapverese/view/my_profile/my_profile_screen.dart';
-import 'package:snapverese/view/notification/notification_screen.dart';
 import 'package:snapverese/view/search/search_screen.dart';
 import 'package:snapverese/view/settings/settings_screen.dart';
 

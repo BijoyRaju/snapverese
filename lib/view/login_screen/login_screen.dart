@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:provider/provider.dart';
@@ -17,7 +16,6 @@ class LoginScreen extends StatelessWidget {
 
   TextEditingController userNameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
-  final AuthService authService = AuthService();
 
     return Scaffold(
       body: ListView(
