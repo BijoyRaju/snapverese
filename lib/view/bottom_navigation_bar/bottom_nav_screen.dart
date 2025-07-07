@@ -51,7 +51,7 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
           BottomNavigationBarItem(
             icon: Icon(Icons.person_outlined),
             activeIcon: Icon(Icons.person),
-            label: 'Notifications',
+            label: 'Profile',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.settings_outlined),

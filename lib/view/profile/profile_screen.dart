@@ -1,5 +1,4 @@
 import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:provider/provider.dart';
@@ -8,6 +7,7 @@ import 'package:snapverese/controller/post_controller.dart';
 import 'package:snapverese/controller/user_controller.dart';
 import 'package:snapverese/model/post_model.dart';
 import 'package:snapverese/model/user_model.dart';
+import 'package:snapverese/view/profile/post_details.dart';
 import 'package:snapverese/widgets/common.dart';
 import 'package:snapverese/widgets/profile_screen_widget.dart';
 
@@ -31,46 +31,37 @@ class _ProfileScreenState extends State<ProfileScreen> {
   bool isLoading = true;
   bool isFollowing = false;
   bool isFollowLoading = false;
+  int followerCount = 0;
+  int followingCount = 0;
 
   @override
   void initState() {
     fetchUserPosts();
     checkFollowStatus();
+    fetchFollowerCount();
     super.initState();
   }
 
-  Future<void> fetchUserPosts()async{
-    final controller = PostController();
-    final post = await controller.getUserPost(widget.user.uid);
-    setState(() {
-      userPosts = post;
-      isLoading = false;
-    });
-  }
 
-Future<void> checkFollowStatus() async {
-  final followController = Provider.of<FollowController>(context, listen: false);
-  final currentUser = Provider.of<UserController>(context, listen: false).currentUser;
-  if (currentUser == null) {
-    log("Current user is null");
-    return;
-  }
-  log("Checking follow status: ${currentUser.uid} -> ${widget.user.uid}");
-
-  setState(() => isFollowLoading = true);
-  await followController.checkIfFollowing(currentUser.uid, widget.user.uid);
-  setState(() {
-    isFollowing = followController.isFollowing;
-    isFollowLoading = false;
-  });
-
-  log("Is following? $isFollowing");
-}
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Profile"),),
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(70),
+        child: ClipRRect(
+          borderRadius: BorderRadius.vertical(
+            bottom: Radius.circular(24), 
+          ),
+          child: AppBar(
+            backgroundColor: Colors.black, 
+            title: customText("Profile", 24, fontWeight: FontWeight.w500, color: Colors.white),
+            centerTitle: true,
+            elevation: 4,
+            foregroundColor: Colors.white,
+            ),
+          ),
+        ),
       body: SingleChildScrollView(
         child: Column(
           children: [
@@ -105,13 +96,10 @@ Future<void> checkFollowStatus() async {
                       log("Current user is null on Follow");
                       return;
                     }
-
                     log("Following user: ${currentUser.uid} -> ${widget.user.uid}");
-
                     setState(() => isFollowLoading = true);
                     await Provider.of<FollowController>(context, listen: false)
                         .followUser(currentUser.uid, widget.user.uid);
-
                     setState(() {
                       isFollowing = true;
                       isFollowLoading = false;
@@ -143,7 +131,16 @@ Future<void> checkFollowStatus() async {
                 ],
               ),
             Gap(20),
-            customText("Posts  ${userPosts.length}", 20),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                customText("Posts  ${userPosts.length}", 20),
+                Gap(20),
+                customText("Follower  $followerCount", 20),
+                Gap(20),
+                customText("Following  $followingCount", 20)
+              ],
+            ),
             Divider(),
             Padding(
                     padding: const EdgeInsets.all(8),
@@ -160,7 +157,27 @@ Future<void> checkFollowStatus() async {
                         final post = userPosts[index];
                         return GestureDetector(
                           onTap: () {
+                             showModalBottomSheet(
+                              context: context,
+                              isScrollControlled: true,
+                              shape: const RoundedRectangleBorder(
+                                borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+                              ),
+                              builder: (context) => PostDetails(
+                                post: post,
+                                isOwnProfile: widget.isOwnProfile,
+                                onDelete: () async {
+                                  final postController = PostController();
+                                  await postController.deletePost(post.id); 
+                                  fetchUserPosts();
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(content: Text("Post deleted")),
+                                  );
+                                },
+                              ),
+                            );
                           },
+
                           child: Image.network(
                             post.imageUrl,
                             fit: BoxFit.cover,
@@ -171,7 +188,46 @@ Future<void> checkFollowStatus() async {
                   ),
                 ],
               ),
-            ),
+        ),
     );
+  }
+
+  Future<void> fetchUserPosts()async{
+    final controller = PostController();
+    final post = await controller.getUserPost(widget.user.uid);
+    setState(() {
+      userPosts = post;
+      isLoading = false;
+    });
+  }
+
+Future<void> checkFollowStatus() async {
+  final followController = Provider.of<FollowController>(context, listen: false);
+  final currentUser = Provider.of<UserController>(context, listen: false).currentUser;
+  if (currentUser == null) {
+    log("Current user is null");
+    return;
+  }
+  log("Checking follow status: ${currentUser.uid} -> ${widget.user.uid}");
+
+  setState(() => isFollowLoading = true);
+  await followController.checkIfFollowing(currentUser.uid, widget.user.uid);
+  setState(() {
+    isFollowing = followController.isFollowing;
+    isFollowLoading = false;
+  });
+
+  log("Is following? $isFollowing");
+}
+
+  Future<void> fetchFollowerCount()async{
+    final followController = Provider.of<FollowController>(context,listen: false);
+
+    final followers = await followController.getFollowerCount(widget.user.uid);
+    final following = await followController.getFollowingCount(widget.user.uid);
+    setState(() {
+      followerCount = followers;
+      followingCount = following;
+    });
   }
 }

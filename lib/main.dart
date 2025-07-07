@@ -33,9 +33,13 @@ class MyApp extends StatelessWidget {
       ],
       
       child: MaterialApp(
+        // routes: {
+        //   '/update-password': (context) => const UpdatePasswordScreen(),
+        // },
         title: "SNAPvERESE",
         home: SplashScreen(),
       ),
     );
+    
   }
 }
