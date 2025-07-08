@@ -21,16 +21,6 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
   final TextEditingController rePasswordController = TextEditingController();
 
   @override
-  void dispose() {
-    nameController.dispose();
-    phoneController.dispose();
-    emailController.dispose();
-    passwordController.dispose();
-    rePasswordController.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
@@ -72,6 +62,21 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
 
                     if (name.isEmpty || phone.isEmpty || email.isEmpty || password.isEmpty || rePassword.isEmpty) {
                       showSnackBar(context, "Please fill all fields");
+                      return;
+                    }
+
+                    if (!isValidPhone(phone)) {
+                      showSnackBar(context, "Enter a valid 10-digit mobile number");
+                      return;
+                    }
+
+                    if (!isValidEmail(email)) {
+                      showSnackBar(context, "Enter a valid email address");
+                      return;
+                    }
+
+                    if (!isValidPassword(password)) {
+                      showSnackBar(context, "Password must be at least 6 characters and contain a number");
                       return;
                     }
 
@@ -118,5 +123,29 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
         ),
       ),
     );
+  }
+    @override
+  void dispose() {
+    nameController.dispose();
+    phoneController.dispose();
+    emailController.dispose();
+    passwordController.dispose();
+    rePasswordController.dispose();
+    super.dispose();
+  }
+
+  bool isValidEmail(String email) {
+    final emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w]{2,4}$');
+    return emailRegex.hasMatch(email);
+  }
+
+  bool isValidPhone(String phone) {
+    final phoneRegex = RegExp(r'^[6-9]\d{9}$'); 
+    return phoneRegex.hasMatch(phone);
+  }
+
+  bool isValidPassword(String password) {
+    final passRegex = RegExp(r'^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}$');
+    return passRegex.hasMatch(password);
   }
 }
