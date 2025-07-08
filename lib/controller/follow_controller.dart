@@ -1,15 +1,23 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:snapverese/service/follow_service.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class FollowController extends ChangeNotifier{
   final FollowService _followService = FollowService();
   bool _isFollowing = false;
   bool get isFollowing => _isFollowing;
 
-  Future<void> checkIfFollowing(String currentUid, String otherUid)async{
-    _isFollowing = await _followService.isFollowing(currentUid, otherUid);
-    notifyListeners();
+
+  Future<bool> checkIfFollowing(String currentUid,String otherUid)async{
+    final response = await Supabase.instance.client
+                    .from('follows')
+                    .select()
+                    .eq('follower_uid', currentUid)
+                    .eq('following_uid' , otherUid)
+                    .maybeSingle();
+    
+    return response != null;
   }
 
   Future<void> followUser(String currentUid,String otherUid)async{

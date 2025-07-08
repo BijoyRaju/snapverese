@@ -6,7 +6,6 @@ import 'package:snapverese/controller/like_controller.dart';
 import 'package:snapverese/controller/user_controller.dart';
 import 'package:snapverese/model/user_model.dart';
 import 'package:snapverese/view/home/screens/add_post_screen.dart';
-import 'package:snapverese/view/home/screens/notification_dialog.dart';
 import 'package:snapverese/widgets/common.dart';
 import 'package:snapverese/widgets/home_screen_widget.dart';
 import 'package:snapverese/service/user_service.dart';
@@ -31,6 +30,7 @@ class _HomeScreenState extends State<HomeScreen> {
       final userController = Provider.of<UserController>(context, listen: false);
       final postController = Provider.of<PostController>(context, listen: false);
       final likeController = Provider.of<LikeController>(context, listen: false);
+
 
       userController.fetchCurrentUser().then((_) {
         final userId = userController.currentUser?.uid;
@@ -68,12 +68,12 @@ class _HomeScreenState extends State<HomeScreen> {
                   Navigator.push(context, MaterialPageRoute(builder: (_) => const AddPostScreen()));
                 },
               ),
-              IconButton(
-                icon: const Icon(Icons.notifications, size: 28),
-                onPressed: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (_) => const NotificationDialog()));
-                },
-              ),
+              // IconButton(
+              //   icon: const Icon(Icons.notifications, size: 28),
+              //   onPressed: () {
+              //     Navigator.push(context, MaterialPageRoute(builder: (_) => const NotificationDialog()));
+              //   },
+              // ),
             ],
           ),
           body: Column(

@@ -87,49 +87,79 @@ class _ProfileScreenState extends State<ProfileScreen> {
             if(!widget.isOwnProfile)
             isFollowLoading
             ? CircularProgressIndicator()
-            : Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  profileButton("Follow", () async {
-                    final currentUser = Provider.of<UserController>(context, listen: false).currentUser;
-                    if (currentUser == null) {
-                      log("Current user is null on Follow");
-                      return;
-                    }
-                    log("Following user: ${currentUser.uid} -> ${widget.user.uid}");
-                    setState(() => isFollowLoading = true);
-                    await Provider.of<FollowController>(context, listen: false)
-                        .followUser(currentUser.uid, widget.user.uid);
-                    setState(() {
-                      isFollowing = true;
-                      isFollowLoading = false;
-                    });
+            : Consumer<FollowController>(
+                      builder: (context, followController, _) {
+                        return Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            profileButton(
+  isFollowing ? "Unfollow" : "Follow",
+  () async {
+    final currentUser = Provider.of<UserController>(context, listen: false).currentUser;
+    if (currentUser == null) return;
 
-                    log("Followed successfully");
-                  }, isFollowing ? Colors.grey : Colors.black),
-                  Gap(20),
-                  profileButton("Unfollow", () async {
-                    final currentUser = Provider.of<UserController>(context, listen: false).currentUser;
-                    if (currentUser == null) {
-                      log("Current user is null on Unfollow");
-                      return;
-                    }
+    setState(() => isFollowLoading = true);
+    final followController = Provider.of<FollowController>(context, listen: false);
 
-                    log("Unfollowing user: ${currentUser.uid} -> ${widget.user.uid}");
+    if (isFollowing) {
+      await followController.unFollowUser(currentUser.uid, widget.user.uid);
+    } else {
+      await followController.followUser(currentUser.uid, widget.user.uid);
+    }
 
-                    setState(() => isFollowLoading = true);
-                    await Provider.of<FollowController>(context, listen: false)
-                        .unFollowUser(currentUser.uid, widget.user.uid);
+    await fetchFollowerCount();
+    await checkFollowStatus(); 
+  },
+  isFollowing ? Colors.grey : Colors.black,
+),
 
-                    setState(() {
-                      isFollowing = false;
-                      isFollowLoading = false;
-                    });
+                          ],
+                        );
+                      },
+                    ),
+            //  Row(
+            //     mainAxisAlignment: MainAxisAlignment.center,
+            //     children: [
+            //       profileButton("Follow", () async {
+            //         final currentUser = Provider.of<UserController>(context, listen: false).currentUser;
+            //         if (currentUser == null) {
+            //           log("Current user is null on Follow");
+            //           return;
+            //         }
+            //         log("Following user: ${currentUser.uid} -> ${widget.user.uid}");
+            //         setState(() => isFollowLoading = true);
+            //         await Provider.of<FollowController>(context, listen: false)
+            //             .followUser(currentUser.uid, widget.user.uid);
+            //         setState(() {
+            //           isFollowing = true;
+            //           isFollowLoading = false;
+            //         });
 
-                    log("Unfollowed successfully");
-                  }, !isFollowing ? Colors.grey : Colors.black),
-                ],
-              ),
+            //         log("Followed successfully");
+            //       }, isFollowing ? Colors.grey : Colors.black),
+            //       Gap(20),
+            //       profileButton("Unfollow", () async {
+            //         final currentUser = Provider.of<UserController>(context, listen: false).currentUser;
+            //         if (currentUser == null) {
+            //           log("Current user is null on Unfollow");
+            //           return;
+            //         }
+
+            //         log("Unfollowing user: ${currentUser.uid} -> ${widget.user.uid}");
+
+            //         setState(() => isFollowLoading = true);
+            //         await Provider.of<FollowController>(context, listen: false)
+            //             .unFollowUser(currentUser.uid, widget.user.uid);
+
+            //         setState(() {
+            //           isFollowing = false;
+            //           isFollowLoading = false;
+            //         });
+
+            //         log("Unfollowed successfully");
+            //       }, !isFollowing ? Colors.grey : Colors.black),
+            //     ],
+            //   ),
             Gap(20),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -201,6 +231,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     });
   }
 
+
 Future<void> checkFollowStatus() async {
   final followController = Provider.of<FollowController>(context, listen: false);
   final currentUser = Provider.of<UserController>(context, listen: false).currentUser;
@@ -208,17 +239,23 @@ Future<void> checkFollowStatus() async {
     log("Current user is null");
     return;
   }
-  log("Checking follow status: ${currentUser.uid} -> ${widget.user.uid}");
-
-  setState(() => isFollowLoading = true);
-  await followController.checkIfFollowing(currentUser.uid, widget.user.uid);
   setState(() {
-    isFollowing = followController.isFollowing;
-    isFollowLoading = false;
+    isFollowLoading = true;
   });
 
+  final result = await followController.checkIfFollowing(currentUser.uid, widget.user.uid);
+
+  log("Checking follow status: ${currentUser.uid} -> ${widget.user.uid}");
+  // setState(() => isFollowLoading = true);
+  // await followController.checkIfFollowing(currentUser.uid, widget.user.uid);
+
+  setState(() {
+    isFollowing = result;
+    isFollowLoading = false;
+  });
   log("Is following? $isFollowing");
 }
+
 
   Future<void> fetchFollowerCount()async{
     final followController = Provider.of<FollowController>(context,listen: false);
