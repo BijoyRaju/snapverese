@@ -46,6 +46,29 @@ class UserController with ChangeNotifier {
     return await _userService.uploadProfileImage(imageFile);
   } 
 
+Future<void> deleteProfilePhoto() async {
+  try {
+    // If user is null or profile image is null/empty, return
+    if (_currentUser == null || (_currentUser!.profileImage?.isEmpty ?? true)) return;
+
+    final imageUrl = _currentUser!.profileImage!;
+    final filePath = imageUrl.split('/').last.split('?').first;
+
+    // Delete from Supabase Storage
+    await _userService.deleteProfile(filePath);
+
+    // Update user's profile image to empty in database
+    _currentUser = _currentUser!.copyWith(profileImage: '');
+    await _userService.updateUser(_currentUser!);
+
+    notifyListeners();
+  } catch (e) {
+    debugPrint("Error deleting profile photo: $e");
+  }
+}
+
+
+
 
   // Search User
   Future<void> searchUsers(String query) async {

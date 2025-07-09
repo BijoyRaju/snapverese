@@ -32,60 +32,64 @@ class _AddPostScreenState extends State<AddPostScreen> {
       body:SafeArea(
         child: Padding(
           padding: const EdgeInsets.only(right: 10, left: 10),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
+          child: ListView(
             children: [
-              Center(child: customText("Create New Post", 26,fontWeight: FontWeight.bold)),
-              const Gap(20),
-              if(_selectedImage != null)
-                ClipRRect(
-                  borderRadius: BorderRadiusGeometry.circular(12),
-                  child: Image.file(
-                    _selectedImage!,
-                    height: 200,
-                    width: double.infinity,
-                    fit: BoxFit.cover,
-                  ),
-                  ),
-                  if(_selectedImage != null) const Gap(10),
-              Container(
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(12),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.grey.withOpacity(0.4),
-                      spreadRadius: 2,
-                      blurRadius: 6,
-                      offset: const Offset(0, 2),
-                    ),
-                  ],
-                ),
-                padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                child: TextField(
-                  controller: controller,
-                  maxLines: 10,
-                  decoration: InputDecoration(
-                    hintText: "What's on your mind?",
-                    border: InputBorder.none,
-                    focusedBorder: InputBorder.none,
-                  ),
-                ),
-              ),
-              Gap(1),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
-                  IconButton(
-                    onPressed: showImagePickerOptions
-                    ,
-                    icon: Icon(Icons.photo_size_select_actual_rounded),
-                    iconSize: 30,
+                  Center(child: customText("Create New Post", 26,fontWeight: FontWeight.bold)),
+                  const Gap(20),
+                  if(_selectedImage != null)
+                    ClipRRect(
+                      borderRadius: BorderRadiusGeometry.circular(12),
+                      child: Image.file(
+                        _selectedImage!,
+                        height: 200,
+                        width: double.infinity,
+                        fit: BoxFit.cover,
+                      ),
+                      ),
+                      if(_selectedImage != null) const Gap(10),
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(12),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(0.4),
+                          spreadRadius: 2,
+                          blurRadius: 6,
+                          offset: const Offset(0, 2),
+                        ),
+                      ],
+                    ),
+                    padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                    child: TextField(
+                      controller: controller,
+                      maxLines: 10,
+                      decoration: InputDecoration(
+                        hintText: "What's on your mind?",
+                        border: InputBorder.none,
+                        focusedBorder: InputBorder.none,
+                      ),
+                    ),
                   ),
+                  Gap(1),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      IconButton(
+                        onPressed: showImagePickerOptions
+                        ,
+                        icon: Icon(Icons.photo_size_select_actual_rounded),
+                        iconSize: 30,
+                      ),
+                    ],
+                  ),
+                  Gap(20),
+                  customButton("Save", handleSavePost, null)
                 ],
               ),
-              Gap(20),
-              customButton("Save", handleSavePost, null)
             ],
           ),
         ),

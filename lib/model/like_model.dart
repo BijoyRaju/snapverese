@@ -14,9 +14,9 @@ class LikeModel {
   factory LikeModel.fromMap(Map<String,dynamic>map){
     return LikeModel(
       id: map['id'],
-      userId: map['userId'],
-      postId: map['postId'],
-      createdAt: map['createdAt']
+      userId: map['user_id'],
+      postId: map['post_id'],
+      createdAt: map['created_at']
     );
   }
 

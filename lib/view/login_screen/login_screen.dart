@@ -27,7 +27,7 @@ class LoginScreen extends StatelessWidget {
                 children: [
                   Center(child: customText("LOGIN", 40,fontWeight: FontWeight.bold)),
                   Gap(100),
-                  customText("User Name", 16,fontWeight: FontWeight.w500,color: const Color.fromARGB(255, 92, 92, 92)),
+                  customText("User Email", 16,fontWeight: FontWeight.w500,color: const Color.fromARGB(255, 92, 92, 92)),
                   Gap(11),
                   customTextField("xxx@gmail.com",userNameController),
                   Gap(20),
@@ -61,14 +61,18 @@ class LoginScreen extends StatelessWidget {
 
                     try {
                       await authController.login(email, password);
+                      if(context.mounted){
                       Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(builder: (_) =>  BottomNavScreen()),
                       );
+                      }
                     } catch (e) {
+                      if(context.mounted){
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(content: Text("Login failed: $e")),
                       );
+                      }
                     }
                   }, null),
                   Gap(20),
@@ -87,11 +91,13 @@ class LoginScreen extends StatelessWidget {
                   loginCustomButton("Google", ()async{
                     final result = await AuthService().nativeGoogleSignIn();
                   if (result == "Google Authentication successful") {
+                    if(context.mounted){
                     Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const BottomNavScreen()));
+                  }
                   }
                   }, 'assets/images/google.png'),
                   Gap(20),
-                  loginCustomButton("Apple", (){}, 'assets/images/apple.png'),
+                  // loginCustomButton("Apple", (){}, 'assets/images/apple.png'),
                 ],
               ),
           ),

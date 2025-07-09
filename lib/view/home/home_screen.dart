@@ -20,30 +20,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   bool _isInitialized = false;
 
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-
-    if (!_isInitialized) {
-      _isInitialized = true;
-
-      final userController = Provider.of<UserController>(context, listen: false);
-      final postController = Provider.of<PostController>(context, listen: false);
-      final likeController = Provider.of<LikeController>(context, listen: false);
-
-
-      userController.fetchCurrentUser().then((_) {
-        final userId = userController.currentUser?.uid;
-        if (userId != null) {
-          postController.loadPosts().then((_) {
-            for (final post in postController.posts) {
-              likeController.fetchLikesData(post.id, userId);
-            }
-          });
-        }
-      });
-    }
-  }
+ 
 
   @override
   Widget build(BuildContext context) {
@@ -102,7 +79,6 @@ class _HomeScreenState extends State<HomeScreen> {
                         final post = postController.posts[index];
                         final userId = currentUser.uid;
 
-                        // Do NOT call fetchLikesData here again!
 
                         return FutureBuilder<UserModel?>(
                           future: UserService().getUserById(post.uid),
@@ -113,7 +89,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
                             final user = snapshot.data!;
                             final timeFormatted = DateFormat('hh:mm a').format(post.createdAt.toLocal());
-                            final isLiked = likeController.likedPost.contains(post.id);
+                            final isLiked = likeController.isLikedByUser(post.id, userId);
                             final likes = likeController.likesCount[post.id]?.toString() ?? "0";
 
                             return Padding(
@@ -141,5 +117,29 @@ class _HomeScreenState extends State<HomeScreen> {
         );
       },
     );
+  }
+   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    if (!_isInitialized) {
+      _isInitialized = true;
+
+      final userController = Provider.of<UserController>(context, listen: false);
+      final postController = Provider.of<PostController>(context, listen: false);
+      final likeController = Provider.of<LikeController>(context, listen: false);
+
+
+      userController.fetchCurrentUser().then((_) {
+        final userId = userController.currentUser?.uid;
+        if (userId != null) {
+          postController.loadPosts().then((_) {
+            for (final post in postController.posts) {
+              likeController.fetchLikesData(post.id, userId);
+            }
+          });
+        }
+      });
+    }
   }
 }

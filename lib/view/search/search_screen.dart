@@ -27,6 +27,7 @@ class _SearchScreenState extends State<SearchScreen> {
     return Scaffold(
       appBar: AppBar(
         title: customText("SNAPvERSE", 24, fontWeight: FontWeight.w500),
+        automaticallyImplyLeading: false,
       ),
       body: SafeArea(
         child: Padding(

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:snapverese/controller/auth_controller.dart';
+import 'package:snapverese/controller/comment_controller.dart';
 import 'package:snapverese/controller/follow_controller.dart';
 import 'package:snapverese/controller/like_controller.dart';
 import 'package:snapverese/controller/post_controller.dart';
@@ -29,15 +30,14 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => PostController()),
         ChangeNotifierProvider(create: (_) => UserController()..fetchCurrentUser()),
         ChangeNotifierProvider(create: (_) => LikeController()),
-        ChangeNotifierProvider(create: (_) => FollowController())
+        ChangeNotifierProvider(create: (_) => FollowController()),
+        ChangeNotifierProvider(create: (_) => CommentController()),
       ],
       
       child: MaterialApp(
-        // routes: {
-        //   '/update-password': (context) => const UpdatePasswordScreen(),
-        // },
         title: "SNAPvERESE",
         home: SplashScreen(),
+        debugShowCheckedModeBanner: false,
       ),
     );
     

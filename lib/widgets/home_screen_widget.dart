@@ -1,5 +1,6 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:snapverese/widgets/common.dart';
+import 'package:shimmer/shimmer.dart';
 
 Widget postCard({
   required String userName,
@@ -18,31 +19,53 @@ Widget postCard({
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         ListTile(
-          leading: CircleAvatar(
-            backgroundImage: (userImage != null && userImage.isNotEmpty)
-                ? NetworkImage(userImage)
-                : const AssetImage('assets/images/profile.png') as ImageProvider,
+          leading: userImage != null && userImage.isNotEmpty
+              ? CircleAvatar(
+                  backgroundImage: CachedNetworkImageProvider(userImage),
+                )
+              : const CircleAvatar(
+                  backgroundImage: AssetImage('assets/images/profile.png'),
+                ),
+          title: Text(
+            userName,
+            style: const TextStyle(fontWeight: FontWeight.bold),
           ),
-          title: Text(userName, style: const TextStyle(fontWeight: FontWeight.bold)),
           subtitle: Text(timeAgo),
           trailing: const Icon(Icons.more_vert),
         ),
+
+        // Post Image with shimmer
         if (postImage != null && postImage.isNotEmpty)
           ClipRRect(
             borderRadius: BorderRadius.circular(10),
-            child: Image.network(postImage, fit: BoxFit.cover, errorBuilder: (_, __, ___) {
-              return Container(
+            child: CachedNetworkImage(
+              imageUrl: postImage,
+              placeholder: (context, url) => Shimmer.fromColors(
+                baseColor: Colors.grey.shade300,
+                highlightColor: Colors.grey.shade100,
+                child: Container(
+                  height: 200,
+                  width: double.infinity,
+                  color: Colors.white,
+                ),
+              ),
+              errorWidget: (context, url, error) => Container(
                 height: 200,
                 color: Colors.grey[300],
                 child: const Center(child: Icon(Icons.broken_image)),
-              );
-            }),
+              ),
+              fit: BoxFit.cover,
+            ),
           ),
+
+        // Caption
         if (caption != null && caption.isNotEmpty)
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-            child: customText(caption, 20),
+            child: Text(caption, style: const TextStyle(fontSize: 20)),
           ),
+
+        // Like & Comment row
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 12),
           child: Row(
@@ -54,12 +77,18 @@ Widget postCard({
                   color: isLiked ? Colors.red : Colors.black,
                 ),
               ),
-              customText(likeCount, 20),
+              Text(likeCount, style: const TextStyle(fontSize: 20)),
               const SizedBox(width: 20),
-              IconButton(onPressed: () {}, icon: const Icon(Icons.comment_outlined)),
+              IconButton(
+                onPressed: () {
+                  // TODO: Add comment screen
+                },
+                icon: const Icon(Icons.comment_outlined),
+              ),
             ],
           ),
         ),
+
         const SizedBox(height: 10),
       ],
     ),

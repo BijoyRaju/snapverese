@@ -75,10 +75,6 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                       return;
                     }
 
-                    if (!isValidPassword(password)) {
-                      showSnackBar(context, "Password must be at least 6 characters and contain a number");
-                      return;
-                    }
 
                     if (password != rePassword) {
                       showSnackBar(context, "Passwords do not match");
@@ -94,14 +90,18 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                         password: password,
                         profileImageUrl: '', 
                       );
-
+                    if(context.mounted){
                       Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(builder: (_) => const BottomNavScreen()),
                       );
-                    } catch (e) {
-                      showSnackBar(context, "Registration failed: $e");
                     }
+                    } catch (e) {
+                      if(context.mounted){
+                      showSnackBar(context, "Registration failed: $e");
+                      }
+                    }
+                    
                   }, null),
                   const Gap(20),
                   Row(
@@ -142,10 +142,5 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
   bool isValidPhone(String phone) {
     final phoneRegex = RegExp(r'^[6-9]\d{9}$'); 
     return phoneRegex.hasMatch(phone);
-  }
-
-  bool isValidPassword(String password) {
-    final passRegex = RegExp(r'^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}$');
-    return passRegex.hasMatch(password);
   }
 }

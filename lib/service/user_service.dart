@@ -49,4 +49,14 @@ class UserService {
       return null;
     }
   }
+
+    // Delete profile photo
+  Future<void> deleteProfile(String imagePath)async{
+    try{
+    await Supabase.instance.client.storage.from('profile-images').remove([imagePath]);
+    }catch(e){
+      log("Failed to delete : $e");
+    }
+  }
+
 }

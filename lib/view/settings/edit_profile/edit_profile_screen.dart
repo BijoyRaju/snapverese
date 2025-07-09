@@ -111,6 +111,20 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                       Navigator.pop(context);
                                       await _pickAndUploadImage(ImageSource.gallery);
                                     },
+                                  ),
+                                  ListTile(
+                                    leading: const Icon(Icons.delete),
+                                    title: Text("Delete"),
+                                    onTap: ()async{
+                                      Navigator.pop(context);
+                                      await Provider.of<UserController>(context,listen: false).deleteProfilePhoto();
+                                        setState(() {
+                                          uploadedImageUrl = '';
+                                          pickedImageFile = null;
+                                        });
+                                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Profile photo deleted")));
+                                    },
+
                                   )
                                 ],
                               ));
@@ -146,6 +160,31 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               final oldUser = userController.currentUser;
 
               if(oldUser == null)return;
+
+                final name = nameController.text.trim();
+                final email = emailController.text.trim();
+                final phone = phoneController.text.trim();
+
+                if(context.mounted){
+                if(name.isEmpty || email.isEmpty || phone.isEmpty){
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Please fill all the fields"))
+                  );
+                  return;
+                }
+
+                if(!isValidEmail(email)){
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Enter a valid gmail"))
+                  );
+                  return;
+                }
+
+                if(!isValidPhone(phone)){
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Enter a valid phone number"))
+                  );
+                  return;
+                }
+                }
+
               final updateUser = UserModel(
                 uid: oldUser.uid,
                 name: nameController.text,
@@ -170,7 +209,7 @@ Future<void> _pickAndUploadImage(ImageSource source) async {
     final file = File(image.path);
 
     setState(() {
-      pickedImageFile = file; // <-- Update this first to reflect in UI immediately
+      pickedImageFile = file; 
     });
 
     final url = await Provider.of<UserController>(context, listen: false)
@@ -183,4 +222,15 @@ Future<void> _pickAndUploadImage(ImageSource source) async {
     }
   }
 }
+
+ bool isValidEmail(String email) {
+    final emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w]{2,4}$');
+    return emailRegex.hasMatch(email);
+  }
+
+  bool isValidPhone(String phone) {
+    final phoneRegex = RegExp(r'^[6-9]\d{9}$'); 
+    return phoneRegex.hasMatch(phone);
+  }
+
 }

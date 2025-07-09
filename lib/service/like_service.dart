@@ -13,7 +13,7 @@ class LikeService {
       if(postId.isEmpty || userId.isEmpty){
         throw Exception("Invalid post id or user id");
       }
-
+      
       final response =  await _client.from('likes').insert({
         'post_id' : postId,
         'user_id' : userId
