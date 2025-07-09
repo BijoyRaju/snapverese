@@ -13,11 +13,21 @@ class AuthService {
   final _client = Supabase.instance.client;
 
   Future<AuthResponse> signUp(String email, String password) async {
+    try{
     return await _client.auth.signUp(email: email, password: password);
+    }catch(e){
+      log("Error in Sign Up : $e");
+      rethrow;
+    }
   }
 
   Future<AuthResponse> signIn(String email, String password) async {
+    try{
     return await _client.auth.signInWithPassword(email: email, password: password);
+    }catch(e){
+      log("Error in Sign In : $e");
+      rethrow;
+    }
   }
 
   Future<void> signOut() async {

@@ -42,7 +42,7 @@ class SettingsScreen extends StatelessWidget {
     settingsCard("Language", Icons.language,(){
       Navigator.push(context, MaterialPageRoute(builder: (context) => LanguageScreen()));
     }),
-    settingsCard("Friends", Icons.co_present_outlined,(){}),
+    // settingsCard("Friends", Icons.co_present_outlined,(){}),
     Gap(15),
     customText("Preferences", 24,fontWeight: FontWeight.w700),
     Gap(15),

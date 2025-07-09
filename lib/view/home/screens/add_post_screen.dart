@@ -147,19 +147,21 @@ class _AddPostScreenState extends State<AddPostScreen> {
   setState(() => isLoading = true);
 
   try {
+    
     await postController.createPost(
       imageFile: _selectedImage!,
       caption: caption,
     );
 
-    // Clear and show confirmation
     controller.clear();
     setState(() => _selectedImage = null);
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(content: Text('Post created successfully')),
     );
-
-    Navigator.pop(context); // navigate only after confirmation if needed
+    
+  
+    Navigator.pop(context); 
+    
   } catch (e) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text('Failed to post: $e')),

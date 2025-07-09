@@ -93,73 +93,29 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             profileButton(
-  isFollowing ? "Unfollow" : "Follow",
-  () async {
-    final currentUser = Provider.of<UserController>(context, listen: false).currentUser;
-    if (currentUser == null) return;
+                            isFollowing ? "Unfollow" : "Follow",
+                            () async {
+                              final currentUser = Provider.of<UserController>(context, listen: false).currentUser;
+                              if (currentUser == null) return;
 
-    setState(() => isFollowLoading = true);
-    final followController = Provider.of<FollowController>(context, listen: false);
+                              setState(() => isFollowLoading = true);
+                              final followController = Provider.of<FollowController>(context, listen: false);
 
-    if (isFollowing) {
-      await followController.unFollowUser(currentUser.uid, widget.user.uid);
-    } else {
-      await followController.followUser(currentUser.uid, widget.user.uid);
-    }
+                              if (isFollowing) {
+                                await followController.unFollowUser(currentUser.uid, widget.user.uid);
+                              } else {
+                                await followController.followUser(currentUser.uid, widget.user.uid);
+                              }
 
-    await fetchFollowerCount();
-    await checkFollowStatus(); 
-  },
-  isFollowing ? Colors.grey : Colors.black,
-),
-
-                          ],
-                        );
-                      },
-                    ),
-            //  Row(
-            //     mainAxisAlignment: MainAxisAlignment.center,
-            //     children: [
-            //       profileButton("Follow", () async {
-            //         final currentUser = Provider.of<UserController>(context, listen: false).currentUser;
-            //         if (currentUser == null) {
-            //           log("Current user is null on Follow");
-            //           return;
-            //         }
-            //         log("Following user: ${currentUser.uid} -> ${widget.user.uid}");
-            //         setState(() => isFollowLoading = true);
-            //         await Provider.of<FollowController>(context, listen: false)
-            //             .followUser(currentUser.uid, widget.user.uid);
-            //         setState(() {
-            //           isFollowing = true;
-            //           isFollowLoading = false;
-            //         });
-
-            //         log("Followed successfully");
-            //       }, isFollowing ? Colors.grey : Colors.black),
-            //       Gap(20),
-            //       profileButton("Unfollow", () async {
-            //         final currentUser = Provider.of<UserController>(context, listen: false).currentUser;
-            //         if (currentUser == null) {
-            //           log("Current user is null on Unfollow");
-            //           return;
-            //         }
-
-            //         log("Unfollowing user: ${currentUser.uid} -> ${widget.user.uid}");
-
-            //         setState(() => isFollowLoading = true);
-            //         await Provider.of<FollowController>(context, listen: false)
-            //             .unFollowUser(currentUser.uid, widget.user.uid);
-
-            //         setState(() {
-            //           isFollowing = false;
-            //           isFollowLoading = false;
-            //         });
-
-            //         log("Unfollowed successfully");
-            //       }, !isFollowing ? Colors.grey : Colors.black),
-            //     ],
-            //   ),
+                              await fetchFollowerCount();
+                              await checkFollowStatus(); 
+                            },
+                            isFollowing ? Colors.grey : Colors.black,
+                          ),
+                       ],
+                   );
+                },
+              ),
             Gap(20),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -200,14 +156,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   final postController = PostController();
                                   await postController.deletePost(post.id); 
                                   fetchUserPosts();
+                                  if(context.mounted){
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     const SnackBar(content: Text("Post deleted")),
                                   );
+                                  }
                                 },
                               ),
                             );
                           },
-
                           child: Image.network(
                             post.imageUrl,
                             fit: BoxFit.cover,
@@ -246,8 +203,6 @@ Future<void> checkFollowStatus() async {
   final result = await followController.checkIfFollowing(currentUser.uid, widget.user.uid);
 
   log("Checking follow status: ${currentUser.uid} -> ${widget.user.uid}");
-  // setState(() => isFollowLoading = true);
-  // await followController.checkIfFollowing(currentUser.uid, widget.user.uid);
 
   setState(() {
     isFollowing = result;

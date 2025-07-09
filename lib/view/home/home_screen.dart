@@ -84,7 +84,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           future: UserService().getUserById(post.uid),
                           builder: (context, snapshot) {
                             if (!snapshot.hasData) {
-                              return const Center(child: CircularProgressIndicator());
+                              return const SizedBox(height: 150);
                             }
 
                             final user = snapshot.data!;
@@ -125,20 +125,19 @@ class _HomeScreenState extends State<HomeScreen> {
     if (!_isInitialized) {
       _isInitialized = true;
 
+      WidgetsBinding.instance.addPostFrameCallback((_)async{
       final userController = Provider.of<UserController>(context, listen: false);
       final postController = Provider.of<PostController>(context, listen: false);
       final likeController = Provider.of<LikeController>(context, listen: false);
-
-
-      userController.fetchCurrentUser().then((_) {
+      
+      await userController.fetchCurrentUser();
         final userId = userController.currentUser?.uid;
         if (userId != null) {
-          postController.loadPosts().then((_) {
+          await postController.loadPosts();
             for (final post in postController.posts) {
-              likeController.fetchLikesData(post.id, userId);
+              await likeController.fetchLikesData(post.id, userId);
             }
-          });
-        }
+          }
       });
     }
   }
