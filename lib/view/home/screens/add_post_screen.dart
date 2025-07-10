@@ -18,7 +18,7 @@ class _AddPostScreenState extends State<AddPostScreen> {
   final TextEditingController controller = TextEditingController();
   final ImagePicker _picker = ImagePicker();
   File? _selectedImage;
-  bool isLoading = false;
+
   
 
   @override
@@ -56,7 +56,7 @@ class _AddPostScreenState extends State<AddPostScreen> {
                       borderRadius: BorderRadius.circular(12),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.grey.withOpacity(0.4),
+                          color: Color(0x66888888),
                           spreadRadius: 2,
                           blurRadius: 6,
                           offset: const Offset(0, 2),
@@ -129,46 +129,34 @@ class _AddPostScreenState extends State<AddPostScreen> {
             },
           )
         ],
-      ));
+      )
+    );
   }
 
 
   Future<void> handleSavePost() async {
   final caption = controller.text.trim();
-
   if (_selectedImage == null || caption.isEmpty) {
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(content: Text('Please select an image and enter a caption')),
     );
     return;
   }
-
   final postController = Provider.of<PostController>(context, listen: false);
-  setState(() => isLoading = true);
-
-  try {
-    
+  try {   
     await postController.createPost(
       imageFile: _selectedImage!,
       caption: caption,
     );
-
     controller.clear();
-    setState(() => _selectedImage = null);
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Post created successfully')),
-    );
-    
-  
-    Navigator.pop(context); 
-    
+    if(mounted){
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Post created successfully')));
+      Navigator.pop(context);
+    }
   } catch (e) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Failed to post: $e')),
-    );
-  } finally {
-    setState(() => isLoading = false);
-  }
+    if(mounted){
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Failed to post: $e')));}
+  } 
 }
   
 }
