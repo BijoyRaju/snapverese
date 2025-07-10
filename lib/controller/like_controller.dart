@@ -49,7 +49,6 @@ Future<void> toggleLike(String postId, String userId) async {
     _likesCount[postId] = count;
     notifyListeners();
   }
-
   bool isLikedByUser(String postId, String userId){
     return _userLikedPost[userId]?.contains(postId) ?? false;
   }

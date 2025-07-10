@@ -7,6 +7,21 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 class UserService {
   final _client = Supabase.instance.client;
 
+  // Get All Users
+  Future<List<UserModel>> getAllUsers() async {
+    try {
+      final response = await _client
+          .from('users')
+          .select();
+      final data = response as List;
+    return data.map((e) => UserModel.fromMap(e)).toList();
+    } catch (e) {
+      log('Error fetching all users: $e');
+      return [];
+    }
+  }
+
+  
   Future<List<UserModel>> searchUsers(String query) async {
     try {
       final response = await _client

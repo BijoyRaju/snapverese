@@ -1,5 +1,5 @@
+import 'dart:developer';
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:snapverese/model/user_model.dart';
 import 'package:snapverese/service/user_service.dart';
@@ -8,11 +8,22 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 class UserController with ChangeNotifier {
   final UserService _userService = UserService();
   List<UserModel> _searchResults = [];
+  List<UserModel> _allUsers = [];
   bool _isLoading = false;
   UserModel? _currentUser;
   List<UserModel> get searchResults => _searchResults;
+  List<UserModel> get allUsers => _allUsers;
   bool get isLoading => _isLoading;
   UserModel? get currentUser => _currentUser;
+
+  // Fetch all user
+  Future<void>fetchAllUser()async{
+    _isLoading = true;
+    notifyListeners();
+    _allUsers = await _userService.getAllUsers();
+    _isLoading = false;
+    notifyListeners();
+  }
 
   // Fetch User
   Future<void>fetchCurrentUser()async{
@@ -44,11 +55,20 @@ class UserController with ChangeNotifier {
   // Update profile photo
   Future<String?>uploadProfileImage(File imageFile)async{
     return await _userService.uploadProfileImage(imageFile);
-  } 
+  }
+
+// Get user by id
+  Future<UserModel?>getUserById(String uid)async{
+    try{
+      return await _userService.getUserById(uid);
+    }catch(e){
+      log("Error fetching user : $e");
+      return null;
+    }
+  }
 
 Future<void> deleteProfilePhoto() async {
   try {
-    // If user is null or profile image is null/empty, return
     if (_currentUser == null || (_currentUser!.profileImage?.isEmpty ?? true)) return;
 
     final imageUrl = _currentUser!.profileImage!;

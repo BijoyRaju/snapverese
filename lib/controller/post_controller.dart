@@ -7,19 +7,22 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 class PostController with ChangeNotifier {
   final PostService _postService = PostService();
-  final List<PostModel> _posts = [];
 
-  List<PostModel> get posts => _posts;
+  final List<PostModel> _posts = [];
+  final List<PostModel> _userPost = [];
   bool _isLoading = false;
+  File? _selectedImage;
+
+  File? get selectedImage => _selectedImage;
+  List<PostModel> get posts => _posts;
+  List<PostModel> get userPost => _userPost;
   bool get isLoading => _isLoading;
+
 
   void setLoading(bool value) {
     _isLoading = value;
     notifyListeners();
   }
-
-
-
 
   // Create post: upload image + save post
   Future<void> createPost({
@@ -46,11 +49,11 @@ class PostController with ChangeNotifier {
 
       await _postService.addPost(post);
       _posts.insert(0, post);
+      notifyListeners();
     } catch (e) {
       rethrow;
     } finally {
       setLoading(false);
-      notifyListeners();
     }
   }
 
@@ -66,24 +69,41 @@ class PostController with ChangeNotifier {
       log("Load posts error: $e");
     } finally {
       setLoading(false);
-      notifyListeners();
+    }
+  }
+
+  Future<void> fetchUserPost(String uid)async{
+    setLoading(true);
+    try{
+      final data = await _postService.fetchPostByUser(uid);
+      _userPost..clear()..addAll(data);
+    }catch(e){
+      log("Error fetching the user post: $e");
+    }finally{
+      setLoading(false);
     }
   }
 
   /// Delete post
-  Future<void> deletePost(String postId) async {
+  Future<void> deletePost(String postId,String uid) async {
     await _postService.deletePost(postId);
-    _posts.removeWhere((post) => post.id == postId);
+    await fetchUserPost(uid);
+  }
+
+  // Update Image
+  void updateImage(File image){
+    _selectedImage = image;
     notifyListeners();
   }
 
+
   // Get Post by User
-    Future<List<PostModel>>getUserPost(String uid)async{
-      try{
-        return await _postService.fetchPostByUser(uid);
-      }catch(e){
-        log("User post fetch error : $e");
-        return [];
-      }
-    }
+    // Future<List<PostModel>>getUserPost(String uid)async{
+    //   try{
+    //     return await _postService.fetchPostByUser(uid);
+    //   }catch(e){
+    //     log("User post fetch error : $e");
+    //     return [];
+    //   }
+    // }
 }
