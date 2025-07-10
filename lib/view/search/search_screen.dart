@@ -16,11 +16,10 @@ class SearchScreen extends StatefulWidget {
 class _SearchScreenState extends State<SearchScreen> {
   TextEditingController searchController = TextEditingController();
 
-  void _handleSearch() {
-    final query = searchController.text.trim();
-    if (query.isNotEmpty) {
-      Provider.of<UserController>(context, listen: false).searchUsers(query);
-    }
+  @override
+  void initState() {
+    super.initState();
+    Provider.of<UserController>(context,listen: false).fetchAllUser();
   }
   @override
   Widget build(BuildContext context) {
@@ -50,14 +49,18 @@ class _SearchScreenState extends State<SearchScreen> {
                       return const Center(child: CircularProgressIndicator());
                     }
 
-                    if (userController.searchResults.isEmpty) {
+                    final usersToShow = userController.searchResults.isNotEmpty
+                      ? userController.searchResults
+                      : userController.allUsers;
+
+                    if (usersToShow.isEmpty) {
                       return const Center(child: Text('No users found'));
                     }
 
                     return ListView.builder(
-                      itemCount: userController.searchResults.length,
+                      itemCount: usersToShow.length,
                       itemBuilder: (context, index) {
-                        final user = userController.searchResults[index];
+                        final user = usersToShow[index];
                         return Card(
                           child: ListTile(
                             leading: CircleAvatar(
@@ -82,5 +85,14 @@ class _SearchScreenState extends State<SearchScreen> {
         ),
       ),
     );
+  }
+  void _handleSearch() {
+    final query = searchController.text.trim();
+    final userController = Provider.of<UserController>(context,listen: false);
+    if (query.isNotEmpty) {
+      userController.searchUsers(query);
+    }else{
+      userController.clearSearch();
+    }
   }
 }
