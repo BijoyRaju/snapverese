@@ -29,12 +29,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
   void initState() {
     super.initState();
     final postController = Provider.of<PostController>(context,listen: false);
-    postController.fetchUserPost(widget.user.uid);
+    final followController = Provider.of<FollowController>(context,listen: false);
     final currentUser = Provider.of<UserController>(context,listen: false).currentUser;
+
+    postController.fetchUserPost(widget.user.uid);
+    followController.getFollowerCount(widget.user.uid);
+
     if(currentUser != null && !widget.isOwnProfile){
-      final followController = Provider.of<FollowController>(context,listen: false);
       followController.checkIfFollowing(currentUser.uid, widget.user.uid);
-      followController.getFollowerCount(widget.user.uid);
     }
   }
 
