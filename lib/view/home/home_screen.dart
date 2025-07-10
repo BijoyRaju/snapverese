@@ -8,7 +8,6 @@ import 'package:snapverese/model/user_model.dart';
 import 'package:snapverese/view/home/screens/add_post_screen.dart';
 import 'package:snapverese/widgets/common.dart';
 import 'package:snapverese/widgets/home_screen_widget.dart';
-import 'package:snapverese/service/user_service.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -18,9 +17,30 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+
   bool _isInitialized = false;
 
- 
+//   @override
+// void initState() {
+//   super.initState();
+
+//   WidgetsBinding.instance.addPostFrameCallback((_) async {
+//     final userController = Provider.of<UserController>(context, listen: false);
+//     final postController = Provider.of<PostController>(context, listen: false);
+//     final likeController = Provider.of<LikeController>(context, listen: false);
+
+//     await userController.fetchCurrentUser();
+
+//     final userId = userController.currentUser?.uid;
+//     if (userId != null) {
+//       await postController.loadPosts();
+//       for (final post in postController.posts) {
+//         await likeController.fetchLikesData(post.id, userId);
+//       }
+//     }
+//   });
+// }
+
 
   @override
   Widget build(BuildContext context) {
@@ -78,16 +98,15 @@ class _HomeScreenState extends State<HomeScreen> {
                       itemBuilder: (context, index) {
                         final post = postController.posts[index];
                         final userId = currentUser.uid;
-
+                        final postUserId = post.uid;
 
                         return FutureBuilder<UserModel?>(
-                          future: UserService().getUserById(post.uid),
+                          future: Provider.of<UserController>(context,listen: false).getUserById(postUserId),
                           builder: (context, snapshot) {
                             if (!snapshot.hasData) {
                               return const SizedBox(height: 150);
                             }
-
-                            final user = snapshot.data!;
+                            final postuser = snapshot.data!;
                             final timeFormatted = DateFormat('hh:mm a').format(post.createdAt.toLocal());
                             final isLiked = likeController.isLikedByUser(post.id, userId);
                             final likes = likeController.likesCount[post.id]?.toString() ?? "0";
@@ -95,8 +114,8 @@ class _HomeScreenState extends State<HomeScreen> {
                             return Padding(
                               padding: const EdgeInsets.symmetric(horizontal: 12),
                               child: postCard(
-                                userName: user.name,
-                                userImage: user.profileImage,
+                                userName: postuser.name,
+                                userImage: postuser.profileImage,
                                 postImage: post.imageUrl,
                                 caption: post.caption,
                                 timeAgo: timeFormatted,
