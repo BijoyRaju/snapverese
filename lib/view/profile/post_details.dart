@@ -52,9 +52,11 @@ class PostDetails extends StatelessWidget {
                     ],
                   ),
                 );
+                if(context.mounted){
                 if (confirm == true) {
                   onDelete();
                   Navigator.pop(context);
+                }
                 }
               },
               icon: const Icon(Icons.delete, color: Colors.white),

@@ -8,14 +8,15 @@ class MyProfileScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final userController = Provider.of<UserController>(context);
-    final  currentUser = userController.currentUser;
-
-    if(currentUser == null){
-      return Scaffold(
-        body: Center(child: CircularProgressIndicator()),
-      );
-    }
-    return ProfileScreen(user: currentUser,isOwnProfile: true);
+    return Consumer<UserController>(
+      builder: (context,userController,_){
+        final currentUser = userController.currentUser;
+        if(userController.isLoading || currentUser == null){
+          return const Scaffold(
+            body: Center(child: CircularProgressIndicator()),
+          );
+        }return ProfileScreen(user: currentUser,isOwnProfile: true);
+      }
+    );
   }
 }
