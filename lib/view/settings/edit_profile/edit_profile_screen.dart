@@ -178,11 +178,11 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   return;
                 }
 
-                if(!isValidPhone(phone)){
-                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Enter a valid phone number"))
-                  );
-                  return;
-                }
+                // if(!isValidPhone(phone)){
+                //   ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Enter a valid phone number"))
+                //   );
+                //   return;
+                // }
                 }
 
               final updateUser = UserModel(

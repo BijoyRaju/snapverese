@@ -53,5 +53,4 @@ class LikeService {
       .count(CountOption.exact); 
   return response.count ?? 0;
 }
-
 }

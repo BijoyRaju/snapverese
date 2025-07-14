@@ -15,7 +15,6 @@ class UserModel {
     this.profileImage,
   });
 
-  // Add this method 👇
   UserModel copyWith({
     String? uid,
     String? name,

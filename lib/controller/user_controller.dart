@@ -15,6 +15,7 @@ class UserController with ChangeNotifier {
   List<UserModel> get allUsers => _allUsers;
   bool get isLoading => _isLoading;
   UserModel? get currentUser => _currentUser;
+  
 
   // Fetch all user
   Future<void>fetchAllUser()async{
@@ -37,7 +38,6 @@ class UserController with ChangeNotifier {
     _isLoading = false;
     notifyListeners();
   }
-
 
   // Update User Edit profile
   Future<void>updateUserProfile(UserModel user)async{
@@ -67,6 +67,7 @@ class UserController with ChangeNotifier {
     }
   }
 
+// Delete profile photo
 Future<void> deleteProfilePhoto() async {
   try {
     if (_currentUser == null || (_currentUser!.profileImage?.isEmpty ?? true)) return;
@@ -74,10 +75,8 @@ Future<void> deleteProfilePhoto() async {
     final imageUrl = _currentUser!.profileImage!;
     final filePath = imageUrl.split('/').last.split('?').first;
 
-    // Delete from Supabase Storage
     await _userService.deleteProfile(filePath);
 
-    // Update user's profile image to empty in database
     _currentUser = _currentUser!.copyWith(profileImage: '');
     await _userService.updateUser(_currentUser!);
 

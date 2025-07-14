@@ -107,6 +107,7 @@ class _AddPostScreenState extends State<AddPostScreen> {
     }
   }
 
+// Dialog for selecting source to pick image
  void showImagePickerOptions(){
     showModalBottomSheet(
       context: context,
@@ -133,7 +134,7 @@ class _AddPostScreenState extends State<AddPostScreen> {
     );
   }
 
-
+// Save Post
   Future<void> handleSavePost() async {
   final caption = controller.text.trim();
   if (_selectedImage == null || caption.isEmpty) {

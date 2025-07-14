@@ -24,21 +24,25 @@ class _SplashScreenState extends State<SplashScreen> {
     await Future.delayed(const Duration(seconds: 3));
 
     final user = Supabase.instance.client.auth.currentUser;
-
     if (user != null) {
       // Fetch current user details
+      if(mounted){
       final userController = Provider.of<UserController>(context, listen: false);
       await userController.fetchCurrentUser();
-
+      }
+    if(mounted){
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (_) => const BottomNavScreen()),
       );
+    }
     } else {
+      if(mounted){
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (_) => const LoginScreen()),
       );
+      }
     }
   }
 

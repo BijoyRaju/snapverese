@@ -83,10 +83,11 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
 
                     final authController = Provider.of<AuthController>(context, listen: false);
                     try {
+                      final formattedPhone = "+91$phone";
                       await authController.register(
                         name: name,
                         email: email,
-                        phone: phone,
+                        phone: formattedPhone,
                         password: password,
                         profileImageUrl: '', 
                       );

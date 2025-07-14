@@ -33,12 +33,7 @@ class _SearchScreenState extends State<SearchScreen> {
           padding: const EdgeInsets.all(8.0),
           child: Column(
             children: [
-              customSearchBar(
-                'Search...',
-                searchController,
-                _handleSearch,
-                _handleSearch,
-              ),
+              customSearchBar('Search...',searchController,_handleSearch,_handleSearch,),
               Gap(10),
               Divider(),
               Gap(10),

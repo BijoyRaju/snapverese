@@ -9,7 +9,6 @@ import 'package:snapverese/controller/user_controller.dart';
 import 'package:snapverese/view/splash_screen/splash_screen.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-
 void main()async{
   WidgetsFlutterBinding.ensureInitialized();
   await Supabase.initialize(

@@ -4,12 +4,25 @@ import 'package:provider/provider.dart';
 import 'package:snapverese/controller/auth_controller.dart';
 import 'package:snapverese/service/auth_services.dart';
 import 'package:snapverese/view/bottom_navigation_bar/bottom_nav_screen.dart';
-import 'package:snapverese/view/forget_password/forget_password_screen.dart';
+import 'package:snapverese/view/phone_login_screen/phone_login_screen.dart';
 import 'package:snapverese/view/registration/registration_screen.dart';
 import 'package:snapverese/widgets/common.dart';
 
-class LoginScreen extends StatelessWidget {
+class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
+
+  @override
+  State<LoginScreen> createState() => _LoginScreenState();
+}
+
+
+class _LoginScreenState extends State<LoginScreen> {
+
+@override
+  void initState() {
+    super.initState();
+    AuthService.configDeepLink(context);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -39,8 +52,8 @@ class LoginScreen extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
                       GestureDetector(
-                        onTap: (){
-                          Navigator.push(context, MaterialPageRoute(builder: (context) => ForgetPasswordScreen()));
+                        onTap: ()async{
+                          AuthService.requestResetPassword();
                         },
                         child: customText("forgot password ?", 16,fontWeight: FontWeight.w500,color: const Color.fromARGB(255, 92, 92, 92))),
                     ],
@@ -97,6 +110,11 @@ class LoginScreen extends StatelessWidget {
                   }
                   }, 'assets/images/google.png'),
                   Gap(20),
+                  loginCustomButton("Phone", (){
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => PhoneLoginScreen()));
+                  }, 'assets/images/phone.png')
+
+
                   // loginCustomButton("Apple", (){}, 'assets/images/apple.png'),
                 ],
               ),
