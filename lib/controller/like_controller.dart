@@ -14,17 +14,15 @@ class LikeController extends ChangeNotifier{
   Map<String,int> get likesCount => _likesCount;
   Map<String,Set<String>> get userLikedPost => _userLikedPost;
 
-
 Future<void> toggleLike(String postId, String userId) async {
   try {
     final isLiked = isLikedByUser(postId, userId);
-
     if (isLiked) {
       // Unlike
       await _likeService.unLikePost(postId, userId);
       _userLikedPost[userId]?.remove(postId);
 
-      // Prevent negative count
+
       final currentCount = _likesCount[postId] ?? 1;
       _likesCount[postId] = currentCount > 0 ? currentCount - 1 : 0;
     } else {
@@ -40,6 +38,7 @@ Future<void> toggleLike(String postId, String userId) async {
   }
 }
 
+// Show like in post
   Future<void> fetchLikesData(String postId,String userId)async{
     final isLiked =  await _likeService.isPostLikedByUser(postId, userId);
     final count = await _likeService.getLikesCount(postId);

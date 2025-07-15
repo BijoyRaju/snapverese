@@ -126,6 +126,7 @@ class AuthService {
     log("Email Send");
   }
 
+  // Deeplink
   static configDeepLink(BuildContext context){
     final appLinks = AppLinks();
     appLinks.uriLinkStream.listen((uri) {
@@ -135,7 +136,7 @@ class AuthService {
     });
   }
 
-
+  // Changing password
   static resetPassword(String newPassword){
     Supabase.instance.client.auth.updateUser(UserAttributes(password: newPassword));
   }

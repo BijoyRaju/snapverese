@@ -10,9 +10,7 @@ class UserService {
   // Get All Users
   Future<List<UserModel>> getAllUsers() async {
     try {
-      final response = await _client
-          .from('users')
-          .select();
+      final response = await _client.from('users').select();
       final data = response as List;
     return data.map((e) => UserModel.fromMap(e)).toList();
     } catch (e) {
@@ -21,14 +19,10 @@ class UserService {
     }
   }
 
-  
+  // Search user
   Future<List<UserModel>> searchUsers(String query) async {
     try {
-      final response = await _client
-          .from('users')
-          .select()
-          .ilike('name', '%$query%'); 
-
+      final response = await _client.from('users').select().ilike('name', '%$query%'); 
       return (response as List).map((e) => UserModel.fromMap(e)).toList();
     } catch (e) {
       log("Search error: $e");
@@ -36,23 +30,21 @@ class UserService {
     }
   }
 
+  // Get user by ID
   Future<UserModel?> getUserById(String uid) async {
-    final data = await _client
-        .from('users')
-        .select()
-        .eq('uid', uid) 
-        .maybeSingle();
-
+    final data = await _client.from('users').select().eq('uid', uid) .maybeSingle();
     if (data != null) {
       return UserModel.fromMap(data);
     }
     return null;
   }
 
+  // Edit current user
   Future<void> updateUser(UserModel user)async{
     await _client.from('users').update(user.toMap()).eq('uid', user.uid);
   }
 
+  // Edit current user profile iimage
   Future<String?>uploadProfileImage(File file)async{
     try{
       final fileName = 'profile_${DateTime.now().microsecondsSinceEpoch}.jpg';

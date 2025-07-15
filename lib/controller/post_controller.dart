@@ -72,6 +72,7 @@ class PostController with ChangeNotifier {
     }
   }
 
+// Show the post's of user
   Future<void> fetchUserPost(String uid)async{
     setLoading(true);
     try{

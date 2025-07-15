@@ -5,9 +5,9 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 class LikeService {
   final _client = Supabase.instance.client;
 
+  // Like post
   Future<void> likePost(String postId,String userId)async{
     try{
-
       log("Trying to like post: postId=$postId, userId=$userId");
 
       if(postId.isEmpty || userId.isEmpty){
@@ -27,6 +27,7 @@ class LikeService {
     }
   }
 
+  // Remove lie from the post
   Future<void> unLikePost(String postId,String userId)async{
     try{
       await _client.from('likes').delete()
@@ -45,6 +46,7 @@ class LikeService {
       return result != null;
   }
 
+  // Get the like count
   Future<int> getLikesCount(String postId) async {
     final response = await Supabase.instance.client
       .from('likes')

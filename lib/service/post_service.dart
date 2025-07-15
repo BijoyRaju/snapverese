@@ -11,13 +11,9 @@ class PostService {
     try {
       final String fileName = '${DateTime.now().millisecondsSinceEpoch}_${basename(imageFile.path)}';
 
-      await _client.storage
-          .from('post-images')
-          .upload(fileName, imageFile);
+      await _client.storage.from('post-images').upload(fileName, imageFile);
 
-      final String publicUrl = _client.storage
-          .from('post-images')
-          .getPublicUrl(fileName);
+      final String publicUrl = _client.storage.from('post-images').getPublicUrl(fileName);
 
       return publicUrl;
     } catch (e) {
@@ -51,19 +47,14 @@ Future<List<PostModel>> fetchAllPosts() async {
 }
 
   /// Delete post by ID
-  Future<void> deletePost(String postId) async {
-    
+  Future<void> deletePost(String postId) async { 
     await _client.from('posts').delete().eq('id', postId);
   }
 
-
+  // Show current users post's
   Future<List<PostModel>> fetchPostByUser(String uid)async{
-    final response = await Supabase.instance.client
-      .from('posts')
-      .select()
-      .eq('uid', uid)
-      .order('created_at',ascending: false);
-
+    final response = await Supabase.instance.client.from('posts').select().eq('uid', uid)
+    .order('created_at',ascending: false);
     return (response as List).map((e) => PostModel.fromMap(e)).toList();
   }
 }

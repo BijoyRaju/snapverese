@@ -8,8 +8,6 @@ class AuthController with ChangeNotifier {
 
   bool _isLoading = false;
   bool get isLoading => _isLoading;
-  bool _isRegistered = false;
-  bool get isRegistered => _isRegistered;
 
   void setLoading(bool val) {
     _isLoading = val;
@@ -66,7 +64,7 @@ Future<void> sendOtp(String phone) async {
     return res;
   }
 
-  // Register phone user (store data in `users` table)
+  // Register phone user
   Future<void> registerPhoneUser({
     required String name,
     required String phone,
@@ -77,7 +75,7 @@ Future<void> sendOtp(String phone) async {
     final newUser = UserModel(
       uid: user.id,
       name: name,
-      email: '', // Optional for phone registration
+      email: '',
       phone: phone,
       profileImage: null,
     );
