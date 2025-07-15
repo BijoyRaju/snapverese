@@ -11,10 +11,15 @@ class UserController with ChangeNotifier {
   List<UserModel> _allUsers = [];
   bool _isLoading = false;
   UserModel? _currentUser;
+  File? _pickedImage;
+  String? _uploadedImageUrl;
+
   List<UserModel> get searchResults => _searchResults;
   List<UserModel> get allUsers => _allUsers;
   bool get isLoading => _isLoading;
   UserModel? get currentUser => _currentUser;
+  File? get pickedImage => _pickedImage;
+  String? get uploadedImageUtl => _uploadedImageUrl;
   
 
   // Fetch all user
@@ -51,13 +56,12 @@ class UserController with ChangeNotifier {
      notifyListeners();
   }
 
-
   // Update profile photo
   Future<String?>uploadProfileImage(File imageFile)async{
     return await _userService.uploadProfileImage(imageFile);
   }
 
-// Get user by id
+  // Get user by id
   Future<UserModel?>getUserById(String uid)async{
     try{
       return await _userService.getUserById(uid);
@@ -66,6 +70,16 @@ class UserController with ChangeNotifier {
       return null;
     }
   }
+
+void setPickedImageFile(File? file){
+  _pickedImage = file;
+  notifyListeners();
+}
+
+void uploadedImageUrl(String? url){
+  _uploadedImageUrl = url;
+  notifyListeners();
+}
 
 // Delete profile photo
 Future<void> deleteProfilePhoto() async {
@@ -85,9 +99,6 @@ Future<void> deleteProfilePhoto() async {
     debugPrint("Error deleting profile photo: $e");
   }
 }
-
-
-
 
   // Search User
   Future<void> searchUsers(String query) async {

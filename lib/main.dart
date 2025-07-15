@@ -1,3 +1,4 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:snapverese/controller/auth_controller.dart';
@@ -6,6 +7,7 @@ import 'package:snapverese/controller/follow_controller.dart';
 import 'package:snapverese/controller/like_controller.dart';
 import 'package:snapverese/controller/post_controller.dart';
 import 'package:snapverese/controller/user_controller.dart';
+import 'package:snapverese/firebase_options.dart';
 import 'package:snapverese/view/splash_screen/splash_screen.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -15,6 +17,9 @@ void main()async{
     anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV0c2xzZHl1d2Nnbmpxam1jaWp5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTE0NjIxMjEsImV4cCI6MjA2NzAzODEyMX0.IekOZPtluyppnnDQJFMN2Xb8tSMzXNpISrRf0Nc5GHw',
     url: 'https://etslsdyuwcgnjqjmcijy.supabase.co'
     );
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   runApp(MyApp());
 }
 
@@ -39,6 +44,5 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
       ),
     );
-    
   }
 }

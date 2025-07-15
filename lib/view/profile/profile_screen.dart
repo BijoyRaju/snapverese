@@ -28,6 +28,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_)async{
     final postController = Provider.of<PostController>(context,listen: false);
     final followController = Provider.of<FollowController>(context,listen: false);
     final currentUser = Provider.of<UserController>(context,listen: false).currentUser;
@@ -38,6 +39,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     if(currentUser != null && !widget.isOwnProfile){
       followController.checkIfFollowing(currentUser.uid, widget.user.uid);
     }
+    });
   }
 
   @override

@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "172988492160",
+    "project_id": "snapverse-8f73b",
+    "storage_bucket": "snapverse-8f73b.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:172988492160:android:daaacda938c282343c7965",
+        "android_client_info": {
+          "package_name": "com.example.snapverese"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "172988492160-agu23195q4a11cheqd42vfqi7llpb7kr.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.snapverese",
+            "certificate_hash": "308ad0a97e1e1970d67c5fb002efdfc31389bf7d"
+          }
+        },
+        {
+          "client_id": "172988492160-c2qn31v2ifmg46cda2v54afl6opiht75.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDHfzHg51hCA5O-wtQlsBS_RdD6Zz4VzjQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "172988492160-c2qn31v2ifmg46cda2v54afl6opiht75.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

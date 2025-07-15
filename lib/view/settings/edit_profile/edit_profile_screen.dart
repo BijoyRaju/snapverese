@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:image_picker/image_picker.dart';
@@ -20,27 +19,27 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   final emailController = TextEditingController();
   final phoneController = TextEditingController();
   final bioController = TextEditingController();
-  File? pickedImageFile;
+  
+@override
+void initState() {
+  super.initState();
+  final userController = Provider.of<UserController>(context, listen: false);
+  userController.fetchCurrentUser().then((_) {
+    final user = userController.currentUser;
+    if (user != null) {
+      nameController.text = user.name;
+      emailController.text = user.email;
+      phoneController.text = user.phone;
+      bioController.text = user.bio ?? "";
 
-
-  String? uploadedImageUrl;
-
-  @override
-  void initState() {
-    final userController = Provider.of<UserController>(context,listen: false);
-    userController.fetchCurrentUser().then((_){
-      final user = userController.currentUser;
-      if(user != null){
-        nameController.text = user.name;
-        emailController.text = user.email;
-        phoneController.text = user.phone;
-        bioController.text = user.bio ?? "";
-        uploadedImageUrl = user.profileImage;
-        setState(() {});
-      }
-    });
-    super.initState();
-  }
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        final userController = Provider.of<UserController>(context, listen: false);
+        userController.uploadedImageUrl(user.profileImage);
+        userController.setPickedImageFile(null);
+      });
+    }
+  });
+}
 
   @override
   void dispose() {
@@ -74,13 +73,20 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             Center(
               child: Stack(
                 children: [
-                  CircleAvatar(
-                    radius: 70,
-                    backgroundImage: pickedImageFile != null
-                        ? FileImage(pickedImageFile!)
-                        : uploadedImageUrl != null && uploadedImageUrl!.isNotEmpty
-                            ? NetworkImage(uploadedImageUrl!)
-                            : const AssetImage('assets/images/profile.png') as ImageProvider,
+                  Consumer<UserController>(
+                    builder: (context,userController,_){
+                      final pickedImage = userController.pickedImage;
+                      final uploadedImage = userController.uploadedImageUtl;
+                      return
+                        CircleAvatar(
+                            radius: 70,
+                            backgroundImage: pickedImage != null
+                                ? FileImage(pickedImage)
+                                : uploadedImage != null && uploadedImage.isNotEmpty
+                                    ? NetworkImage(uploadedImage)
+                                    : const AssetImage('assets/images/profile.png') as ImageProvider,
+                          );
+                    }
                   ),
                   Positioned(
                     bottom: 0,
@@ -117,14 +123,17 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                     title: Text("Delete"),
                                     onTap: ()async{
                                       Navigator.pop(context);
-                                      await Provider.of<UserController>(context,listen: false).deleteProfilePhoto();
-                                        setState(() {
-                                          uploadedImageUrl = '';
-                                          pickedImageFile = null;
-                                        });
+                                       final userController = Provider.of<UserController>(context, listen: false);
+                                        await userController.deleteProfilePhoto();
+                                        userController.uploadedImageUrl('');
+                                        userController.setPickedImageFile(null);
+                                        if(context.mounted){
+                                        ScaffoldMessenger.of(context).showSnackBar(
+                                          SnackBar(content: Text("Profile photo deleted")),
+                                        );
                                       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Profile photo deleted")));
-                                    },
-
+                                    }
+                                    }                                    
                                   )
                                 ],
                               ));
@@ -191,10 +200,12 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 email: emailController.text,
                 phone: phoneController.text,
                 bio: bioController.text,
-                profileImage: uploadedImageUrl
+                profileImage: userController.uploadedImageUtl
               );
               await userController.updateUserProfile(updateUser);
+              if(context.mounted){
               ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Profile Updated")));
+              }
             }, null),
           ],
         ),
@@ -207,18 +218,11 @@ Future<void> _pickAndUploadImage(ImageSource source) async {
   final image = await picker.pickImage(source: source);
   if (image != null) {
     final file = File(image.path);
-
-    setState(() {
-      pickedImageFile = file; 
-    });
-
-    final url = await Provider.of<UserController>(context, listen: false)
-        .uploadProfileImage(file);
-
+    final userController = Provider.of<UserController>(context,listen: false);
+    userController.setPickedImageFile(file);
+    final url = await userController.uploadProfileImage(file);
     if (url != null) {
-      setState(() {
-        uploadedImageUrl = "$url?${DateTime.now().millisecondsSinceEpoch}";
-      });
+      userController.uploadedImageUrl("$url?${DateTime.now().millisecondsSinceEpoch}");
     }
   }
 }

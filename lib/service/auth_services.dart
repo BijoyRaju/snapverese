@@ -9,8 +9,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 class AuthService {
 
   final GoogleSignIn googleSignIn = GoogleSignIn(
-     serverClientId: '864232459547-r7m5v8ee44mv2f8sv7kqf4gao2atge0d.apps.googleusercontent.com',
-     
+     clientId: '172988492160-c2qn31v2ifmg46cda2v54afl6opiht75.apps.googleusercontent.com',
   );
 
   final _client = Supabase.instance.client;
@@ -51,29 +50,31 @@ class AuthService {
   Future<String> nativeGoogleSignIn() async {
     try {
       await googleSignIn.signOut();
+
       final googleUser = await googleSignIn.signIn();
-      if (googleUser == null) throw Exception("Google sign-in cancelled");
+      if (googleUser == null) {
+        throw Exception("Google sign-in canceled");
+      }
 
       final googleAuth = await googleUser.authentication;
       final idToken = googleAuth.idToken;
-      print("ID Token: $idToken");
-      if (idToken == null) throw Exception("Failed to get ID token");
 
-      final response = await _client.auth.signInWithIdToken(
-        provider: OAuthProvider.google,
-        idToken: idToken,
-        
-      );
+      if (idToken == null) {
+        throw Exception("Failed to get ID Token from Google");
+      }
+
+      final response = await Supabase.instance.client.auth
+          .signInWithIdToken(provider: OAuthProvider.google, idToken: idToken);
 
       if (response.user != null) {
         log("User signed in: ${response.user!.email}");
-        return "Google Authentication successful";
+        return 'Google authentication successful';
+      } else {
+        throw Exception('Failed to sign in with Supabase');
       }
-      throw Exception("Failed to sign in with Google");
     } catch (e) {
-      log("Google auth error: $e");
-      return "Google authentication failed";
-      
+      log("Error: $e");
+      return 'Google authentication failed';
     }
   }
 

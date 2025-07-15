@@ -19,8 +19,11 @@ class _SearchScreenState extends State<SearchScreen> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_){
     Provider.of<UserController>(context,listen: false).fetchAllUser();
+    });
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -59,7 +62,7 @@ class _SearchScreenState extends State<SearchScreen> {
                         return Card(
                           child: ListTile(
                             leading: CircleAvatar(
-                              backgroundImage: user.profileImage != null
+                              backgroundImage: (user.profileImage != null && user.profileImage!.isNotEmpty)
                                   ? NetworkImage(user.profileImage!)
                                   : const AssetImage('assets/images/profile.png') as ImageProvider,
                             ),
